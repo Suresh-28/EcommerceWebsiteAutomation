@@ -1,46 +1,41 @@
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
-public class AddToCart{
-	ChromeDriver driver;
-	String url="https://www.saucedemo.com/inventory.html";
-	
-	public AddToCart(ChromeDriver driver){
-		this.driver=driver;
-	}
-	
-	public void navigateToHomePage() {
-        if (!this.driver.getCurrentUrl().equals(this.url)) {
-            this.driver.get(this.url);
-        }
-    }
-	
-    public Boolean PerformAddToCartFunctionality(String targetProductName) throws InterruptedException {
-        List<WebElement> productNameElements = this.driver.findElements(By.xpath("//div[@class='inventory_item_name ']"));
+public class AddToCartWithoutFunctions {
+    public static void main(String[] args) throws InterruptedException {
+        // Set up ChromeDriver (Ensure the correct path for chromedriver)
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        ChromeDriver driver = new ChromeDriver();
 
+        // Open the SauceDemo inventory page
+        driver.get("https://www.saucedemo.com/inventory.html");
+
+        // Define the target product name
+        String targetProductName = "Sauce Labs Backpack"; // Change as per your requirement
+
+        // Get the list of all product name elements
+        List<WebElement> productNameElements = driver.findElements(By.xpath("//div[@class='inventory_item_name ']"));
+
+        // Loop through the product list to find the target product
         for (WebElement productNameElement : productNameElements) {
             String productName = productNameElement.getText();
-           // System.out.println("Found product: " + productName);
+
             if (productName.equals(targetProductName)) {
-                // If the product name matches the target, click the corresponding "Add to cart" button
+                // Find the corresponding "Add to cart" button
                 List<WebElement> addButton = productNameElement.findElements(By.xpath("./parent::a/parent::div/following-sibling::div/button"));
-              
-                // Check if the "Add to cart" button is found
+
                 if (!addButton.isEmpty()) {
-  
                     addButton.get(0).click();
-                   
-                    // The specific product is added to the cart, you can perform additional actions if needed
-                    return true;
+                    System.out.println(targetProductName + " added to cart successfully!");
+                    break; // Exit loop once the product is added
                 }
             }
         }
 
-        // The target product was not found
-        return false;
+        // Close the browser after execution
+        Thread.sleep(3000); // Optional: Wait before closing
+        driver.quit();
     }
 }
